@@ -1,0 +1,4 @@
+mode: debug #debug/test/release
+addr: :9999
+name: go-rest-api
+url: http://127.0.0.1:9999

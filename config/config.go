@@ -1,0 +1,57 @@
+package config
+
+import (
+	"log"
+	"strings"
+
+	"github.com/fsnotify/fsnotify"
+	"github.com/spf13/viper"
+)
+
+type Config struct {
+	Name string
+}
+
+func Init(cfg string) error {
+	c := Config{
+		Name: cfg,
+	}
+
+	if err := c.initConfig(); err != nil {
+		return err
+	}
+
+	c.watchConfig()
+
+	return nil
+}
+
+// 初始化配置文件
+func (c *Config) initConfig() error {
+	// 如果用户未指定配置文件，则使用 conf/config.yaml
+	if c.Name != "" {
+		viper.SetConfigFile(c.Name)
+	} else {
+		viper.AddConfigPath("conf")
+		viper.SetConfigName("config")
+	}
+	viper.SetConfigType("yaml")
+	// 允许从环境变量读取配置
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("RESTAPI")
+	replacer := strings.NewReplacer(".", "_")
+	viper.SetEnvKeyReplacer(replacer)
+	// 读取所有配置并解析
+	if err := viper.ReadInConfig(); err != nil {
+		return err
+	}
+	return nil
+}
+
+// 监听配置文件变化并热加载程序
+func (c *Config) watchConfig() {
+	viper.WatchConfig()
+	viper.OnConfigChange(func(e fsnotify.Event) {
+		log.Printf("Config file changed: %s", e.Name)
+	})
+}
