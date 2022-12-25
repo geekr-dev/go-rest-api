@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/geekr-dev/go-rest-api/model"
 	"github.com/geekr-dev/go-rest-api/pkg/log"
 	"github.com/spf13/viper"
 )
@@ -20,6 +21,7 @@ type AppConfig struct {
 	Addr string
 	URL  string
 	Log  *log.Config
+	Db   *model.Config
 }
 
 func Init(cfg string) error {

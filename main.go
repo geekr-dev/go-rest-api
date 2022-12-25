@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/geekr-dev/go-rest-api/config"
+	"github.com/geekr-dev/go-rest-api/model"
 	"github.com/geekr-dev/go-rest-api/pkg/log"
 	"github.com/geekr-dev/go-rest-api/router"
 	"github.com/gin-gonic/gin"
@@ -24,6 +25,9 @@ func main() {
 	// init logger
 	logger := log.NewLogger(config.Data.Log)
 	defer logger.Sync()
+
+	// init db
+	model.DB.Init(config.Data.Db)
 
 	// create gin engine
 	gin.SetMode(config.Data.Mode)

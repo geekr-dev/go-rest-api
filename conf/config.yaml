@@ -7,3 +7,8 @@ log:
   fileMaxSize: 10
   fileMaxAge: 32
   fileMaxBackups: 5
+db:
+  dbName: rest_api
+  addr: 127.0.0.1:49153
+  username: root
+  password: mysqlpw
