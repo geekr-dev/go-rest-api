@@ -1,14 +1,13 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/geekr-dev/go-rest-api/config"
+	"github.com/geekr-dev/go-rest-api/pkg/log"
 	"github.com/geekr-dev/go-rest-api/router"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -22,8 +21,12 @@ func main() {
 		panic(err)
 	}
 
-	// create gin engin
-	gin.SetMode(viper.GetString("mode"))
+	// init logger
+	logger := log.NewLogger(config.Data.Log)
+	defer logger.Sync()
+
+	// create gin engine
+	gin.SetMode(config.Data.Mode)
 	g := gin.New()
 
 	// middlewares
@@ -36,6 +39,6 @@ func main() {
 	)
 
 	// start server
-	log.Printf("Start to listening the incoming requests on http address: %s", viper.GetString("addr"))
-	log.Printf(http.ListenAndServe(viper.GetString("addr"), g).Error())
+	logger.Sugar().Infof("Start to listening incoming requests on http address: %s", config.Data.Addr)
+	logger.Sugar().Infof(http.ListenAndServe(config.Data.Addr, g).Error())
 }

@@ -2,3 +2,8 @@ mode: debug #debug/test/release
 addr: :9999
 name: go-rest-api
 url: http://127.0.0.1:9999
+log:
+  filePath: ./storage/log/app.log
+  fileMaxSize: 10
+  fileMaxAge: 32
+  fileMaxBackups: 5

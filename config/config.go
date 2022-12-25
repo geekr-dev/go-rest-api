@@ -1,15 +1,25 @@
 package config
 
 import (
-	"log"
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/geekr-dev/go-rest-api/pkg/log"
 	"github.com/spf13/viper"
 )
 
+var Data *AppConfig
+
 type Config struct {
 	Name string
+}
+
+type AppConfig struct {
+	Name string
+	Mode string
+	Addr string
+	URL  string
+	Log  *log.Config
 }
 
 func Init(cfg string) error {
@@ -45,6 +55,7 @@ func (c *Config) initConfig() error {
 	if err := viper.ReadInConfig(); err != nil {
 		return err
 	}
+	viper.Unmarshal(&Data)
 	return nil
 }
 
@@ -52,6 +63,7 @@ func (c *Config) initConfig() error {
 func (c *Config) watchConfig() {
 	viper.WatchConfig()
 	viper.OnConfigChange(func(e fsnotify.Event) {
-		log.Printf("Config file changed: %s", e.Name)
+		viper.Unmarshal(&Data) // 重新反序列化配置数据
+		// fmt.Printf("Config file changed: %s\n", e.Name)
 	})
 }
