@@ -22,8 +22,12 @@ func Load(g *gin.Engine, m ...gin.HandlerFunc) *gin.Engine {
 		c.String(http.StatusNotFound, "错误的 API 路由")
 	})
 
+	// auth
+	g.POST("/login", user.Login)
+
 	// user
 	u := g.Group("/user")
+	u.Use(middleware.Authenticate())
 	{
 		u.POST("", user.Create)       // 创建用户
 		u.DELETE("/:id", user.Delete) // 删除用户
