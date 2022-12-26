@@ -25,7 +25,7 @@ func Load(g *gin.Engine, m ...gin.HandlerFunc) *gin.Engine {
 	// user
 	u := g.Group("/user")
 	{
-		u.POST("", user.Create)
+		u.POST("/:username", user.Create)
 	}
 
 	// 健康检查

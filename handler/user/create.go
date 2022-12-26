@@ -2,39 +2,41 @@ package user
 
 import (
 	"fmt"
-	"net/http"
 
+	"github.com/geekr-dev/go-rest-api/handler"
 	"github.com/geekr-dev/go-rest-api/pkg/errno"
 	"github.com/geekr-dev/go-rest-api/pkg/log"
 	"github.com/gin-gonic/gin"
 )
 
 func Create(c *gin.Context) {
-	var r struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-
-	var err error
+	var r CreateRequest
 	if err := c.Bind(&r); err != nil {
-		c.JSON(http.StatusOK, gin.H{"error": errno.ErrBind})
+		handler.SendResponse(c, errno.ErrBind, nil)
 		return
 	}
 
+	username := c.Param("username")
+	log.Info("URL username: %s", username)
+
+	desc := c.Query("desc")
+	log.Info("URL key param desc: %s", desc)
+
+	contentType := c.GetHeader("Content-Type")
+	log.Info("Header Content-Type: %s", contentType)
+
 	log.Debug("username is: [%s], password is [%s]", r.Username, r.Password)
 	if r.Username == "" {
-		err = errno.New(errno.ErrUserNotFound, fmt.Errorf("username can not found in db: xx.xx.xx.xx")).Add("This is add message.")
-		log.Error(err.Error())
-	}
-
-	if errno.IsErrUserNotFound(err) {
-		log.Debug("err type is ErrUserNotFound")
+		handler.SendResponse(c, errno.New(errno.ErrUserNotFound, fmt.Errorf("username can not found in db: xx.xx.xx.xx")), nil)
+		return
 	}
 
 	if r.Password == "" {
-		err = fmt.Errorf("password is empty")
+		handler.SendResponse(c, fmt.Errorf("password is empty"), nil)
 	}
 
-	code, message := errno.DecodeErr(err)
-	c.JSON(http.StatusOK, gin.H{"code": code, "message": message})
+	resp := CreateResponse{
+		Username: username,
+	}
+	handler.SendResponse(c, nil, resp)
 }
