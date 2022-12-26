@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/geekr-dev/go-rest-api/handler/sd"
+	"github.com/geekr-dev/go-rest-api/handler/user"
 	"github.com/geekr-dev/go-rest-api/router/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -20,6 +21,12 @@ func Load(g *gin.Engine, m ...gin.HandlerFunc) *gin.Engine {
 	g.NoRoute(func(c *gin.Context) {
 		c.String(http.StatusNotFound, "错误的 API 路由")
 	})
+
+	// user
+	u := g.Group("/user")
+	{
+		u.POST("", user.Create)
+	}
 
 	// 健康检查
 	svcd := g.Group("/sd")

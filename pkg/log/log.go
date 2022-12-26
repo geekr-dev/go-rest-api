@@ -17,7 +17,9 @@ type Config struct {
 
 const TimeFormat = "2006-01-02 15:04:05.000"
 
-func NewLogger(conf *Config) *zap.Logger {
+var logger *zap.Logger
+
+func Init(conf *Config) {
 	// 对日志进行分隔
 	lumberJackLogger := &lumberjack.Logger{
 		Filename:   conf.FilePath,
@@ -48,7 +50,7 @@ func NewLogger(conf *Config) *zap.Logger {
 		),
 		zap.NewAtomicLevelAt(zap.InfoLevel),
 	)
-	return zap.New(core)
+	logger = zap.New(core)
 }
 
 // 自定义时间输出格式
@@ -59,4 +61,24 @@ func customTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 // 自定义文件：行号输出项
 func customCallerEncoder(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEncoder) {
 	enc.AppendString(caller.TrimmedPath())
+}
+
+func Error(template string, args ...interface{}) {
+	logger.Sugar().Errorf(template, args...)
+}
+
+func Debug(template string, args ...interface{}) {
+	logger.Sugar().Debugf(template, args...)
+}
+
+func Warn(template string, args ...interface{}) {
+	logger.Sugar().Warnf(template, args...)
+}
+
+func Info(template string, args ...interface{}) {
+	logger.Sugar().Infof(template, args...)
+}
+
+func Close() {
+	logger.Sync()
 }

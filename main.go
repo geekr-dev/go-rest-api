@@ -23,8 +23,8 @@ func main() {
 	}
 
 	// init logger
-	logger := log.NewLogger(config.Data.Log)
-	defer logger.Sync()
+	log.Init(config.Data.Log)
+	defer log.Close()
 
 	// init db
 	model.DB.Init(config.Data.Db)
@@ -43,6 +43,6 @@ func main() {
 	)
 
 	// start server
-	logger.Sugar().Infof("Start to listening incoming requests on http address: %s", config.Data.Addr)
-	logger.Sugar().Infof(http.ListenAndServe(config.Data.Addr, g).Error())
+	log.Info("Start to listening incoming requests on http address: %s", config.Data.Addr)
+	log.Info(http.ListenAndServe(config.Data.Addr, g).Error())
 }
