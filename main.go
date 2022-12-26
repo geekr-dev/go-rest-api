@@ -7,6 +7,7 @@ import (
 	"github.com/geekr-dev/go-rest-api/model"
 	"github.com/geekr-dev/go-rest-api/pkg/log"
 	"github.com/geekr-dev/go-rest-api/router"
+	"github.com/geekr-dev/go-rest-api/router/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/pflag"
 )
@@ -34,12 +35,14 @@ func main() {
 	g := gin.New()
 
 	// middlewares
-	middlewares := []gin.HandlerFunc{}
+	// middlewares := []gin.HandlerFunc{}
 
 	// routes
 	router.Load(
 		g,
-		middlewares...,
+		// middlewares...,
+		middleware.Logging(),
+		middleware.RequestId(),
 	)
 
 	// start server
