@@ -1,42 +1,46 @@
 package user
 
 import (
-	"fmt"
+	. "github.com/geekr-dev/go-rest-api/handler"
+	"github.com/geekr-dev/go-rest-api/model"
 
-	"github.com/geekr-dev/go-rest-api/handler"
 	"github.com/geekr-dev/go-rest-api/pkg/errno"
-	"github.com/geekr-dev/go-rest-api/pkg/log"
 	"github.com/gin-gonic/gin"
 )
 
 func Create(c *gin.Context) {
 	var r CreateRequest
 	if err := c.Bind(&r); err != nil {
-		handler.SendResponse(c, errno.ErrBind, nil)
+		SendResponse(c, errno.ErrBind, nil)
+		return
+	}
+	if err := r.checkParam(); err != nil {
+		SendResponse(c, err, nil)
 		return
 	}
 
-	username := c.Param("username")
-	log.Info("URL username: %s", username)
+	u := model.UserModel{
+		Username: r.Username,
+		Password: r.Password,
+	}
 
-	desc := c.Query("desc")
-	log.Info("URL key param desc: %s", desc)
-
-	contentType := c.GetHeader("Content-Type")
-	log.Info("Header Content-Type: %s", contentType)
-
-	log.Debug("username is: [%s], password is [%s]", r.Username, r.Password)
-	if r.Username == "" {
-		handler.SendResponse(c, errno.New(errno.ErrUserNotFound, fmt.Errorf("username can not found in db: xx.xx.xx.xx")), nil)
+	if err := u.Validate(); err != nil {
+		SendResponse(c, errno.ErrValidation, nil)
 		return
 	}
 
-	if r.Password == "" {
-		handler.SendResponse(c, fmt.Errorf("password is empty"), nil)
+	if err := u.Encrypt(); err != nil {
+		SendResponse(c, errno.ErrEncrypt, nil)
+		return
+	}
+
+	if err := u.Create(); err != nil {
+		SendResponse(c, errno.ErrDatabase, nil)
+		return
 	}
 
 	resp := CreateResponse{
-		Username: username,
+		Username: r.Username,
 	}
-	handler.SendResponse(c, nil, resp)
+	SendResponse(c, nil, resp)
 }

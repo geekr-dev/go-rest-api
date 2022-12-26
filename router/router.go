@@ -25,7 +25,11 @@ func Load(g *gin.Engine, m ...gin.HandlerFunc) *gin.Engine {
 	// user
 	u := g.Group("/user")
 	{
-		u.POST("/:username", user.Create)
+		u.POST("", user.Create)       // 创建用户
+		u.DELETE("/:id", user.Delete) // 删除用户
+		u.PUT("/:id", user.Update)    // 更新用户
+		u.GET("", user.List)          // 用户列表
+		u.GET("/:username", user.Get) // 获取用户信息
 	}
 
 	// 健康检查
