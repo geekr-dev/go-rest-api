@@ -3,6 +3,10 @@ addr: :9999
 name: go-rest-api
 url: http://127.0.0.1:9999
 secret: Rtg8BPKNEf2mB4mgvKONGPZZQSaJWNLijxR42qRgq0iBb5
+tls:
+  addr: :9443
+  cert: conf/server.crt
+  key: conf/server.key
 log:
   filePath: ./storage/log/app.log
   fileMaxSize: 10

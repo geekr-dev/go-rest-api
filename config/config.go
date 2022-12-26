@@ -16,12 +16,20 @@ type Config struct {
 }
 
 type AppConfig struct {
-	Name string
-	Mode string
+	Name   string
+	Mode   string
+	Addr   string
+	URL    string
+	Secret string
+	Tls    *TlsConfig
+	Log    *log.Config
+	Db     *model.Config
+}
+
+type TlsConfig struct {
 	Addr string
-	URL  string
-	Log  *log.Config
-	Db   *model.Config
+	Cert string
+	Key  string
 }
 
 func Init(cfg string) error {
