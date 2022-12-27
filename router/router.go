@@ -3,10 +3,16 @@ package router
 import (
 	"net/http"
 
+	_ "github.com/geekr-dev/go-rest-api/docs"
+	"github.com/gin-contrib/pprof"
+
 	"github.com/geekr-dev/go-rest-api/handler/sd"
 	"github.com/geekr-dev/go-rest-api/handler/user"
 	"github.com/geekr-dev/go-rest-api/router/middleware"
 	"github.com/gin-gonic/gin"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func Load(g *gin.Engine, m ...gin.HandlerFunc) *gin.Engine {
@@ -21,6 +27,12 @@ func Load(g *gin.Engine, m ...gin.HandlerFunc) *gin.Engine {
 	g.NoRoute(func(c *gin.Context) {
 		c.String(http.StatusNotFound, "错误的 API 路由")
 	})
+
+	// swagger api docs
+	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// 对路由进行性能分析
+	pprof.Register(g)
 
 	// auth
 	g.POST("/login", user.Login)
