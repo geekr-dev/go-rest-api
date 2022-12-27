@@ -1,11 +1,15 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/geekr-dev/go-rest-api/config"
 	"github.com/geekr-dev/go-rest-api/model"
 	"github.com/geekr-dev/go-rest-api/pkg/log"
+	v "github.com/geekr-dev/go-rest-api/pkg/version"
 	"github.com/geekr-dev/go-rest-api/router"
 	"github.com/geekr-dev/go-rest-api/router/middleware"
 	"github.com/gin-gonic/gin"
@@ -13,12 +17,27 @@ import (
 )
 
 var (
-	cfg = pflag.StringP("config", "c", "", "config file path.")
+	cfg     = pflag.StringP("config", "c", "", "config file path.")
+	version = pflag.BoolP("version", "v", false, "show version info.")
 )
 
 func main() {
-	// init config
+	// 解析命令参数
 	pflag.Parse()
+	// 如果启动命令包含了 -v，则打印版本信息然后退出
+	if *version {
+		v := v.Get()
+		// 格式化版本信息
+		marshalled, err := json.MarshalIndent(&v, "", "  ")
+		if err != nil {
+			fmt.Printf("%v\n", err)
+			os.Exit(1)
+		}
+		fmt.Println(string(marshalled))
+		return
+	}
+
+	// init config
 	if err := config.Init(*cfg); err != nil {
 		panic(err)
 	}
