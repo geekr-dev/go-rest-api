@@ -27,9 +27,10 @@ type AppConfig struct {
 }
 
 type TlsConfig struct {
-	Addr string
-	Cert string
-	Key  string
+	Enable bool
+	Addr   string
+	Cert   string
+	Key    string
 }
 
 func Init(cfg string) error {

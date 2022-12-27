@@ -65,7 +65,7 @@ func main() {
 	)
 
 	// start server: tls 证书不为空则启动 https
-	if config.Data.Tls.Cert != "" && config.Data.Tls.Key != "" {
+	if config.Data.Tls.Enable && config.Data.Tls.Cert != "" && config.Data.Tls.Key != "" {
 		log.Info("Start to listening incoming requests on http address: %s", config.Data.Tls.Addr)
 		log.Info(http.ListenAndServeTLS(config.Data.Tls.Addr, config.Data.Tls.Cert, config.Data.Tls.Key, g).Error())
 	} else {

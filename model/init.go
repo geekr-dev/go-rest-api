@@ -15,7 +15,7 @@ type Config struct {
 	Username string
 	Password string
 	Addr     string
-	DbName   string
+	Name     string
 }
 
 var DB *Database
@@ -31,7 +31,7 @@ func (d *Database) openDB(conf *Config) *gorm.DB {
 		conf.Username,
 		conf.Password,
 		conf.Addr,
-		conf.DbName,
+		conf.Name,
 		true,
 		"Local",
 	)

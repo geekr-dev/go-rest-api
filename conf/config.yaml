@@ -1,9 +1,10 @@
 mode: debug #debug/test/release
-addr: :9999
+addr: :9000
 name: go-rest-api
-url: http://127.0.0.1:9999
+url: http://127.0.0.1:9000
 secret: Rtg8BPKNEf2mB4mgvKONGPZZQSaJWNLijxR42qRgq0iBb5
 tls:
+  enable: true
   addr: :9443
   cert: conf/server.crt
   key: conf/server.key
@@ -13,7 +14,7 @@ log:
   fileMaxAge: 32
   fileMaxBackups: 5
 db:
-  dbName: rest_api
-  addr: 127.0.0.1:49153
+  name: rest_api
+  addr: 127.0.0.1:49155
   username: root
   password: mysqlpw
