@@ -24,7 +24,7 @@ services:
       - ./db.sql:/data/application/db.sql
     networks:
       - backend
-  rest.app:
+  rest.app.1:
     build:
       dockerfile: Dockerfile
       context: .
@@ -36,7 +36,27 @@ services:
       RESTAPI_DB_PASSWORD: "root1234"
       RESTAPI_TLS_ENABLE: "false"
     ports:
-      - "9000:9000"
+      - "9001:9000"
+    networks:
+      - backend
+    depends_on:
+      - mysql
+      - nginx
+    links:
+      - mysql
+  rest.app.2:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    environment:
+      RESTAPI_ADDR: ":9000"
+      RESTAPI_DB_NAME: "rest_db"
+      RESTAPI_DB_ADDR: "mysql:3306"
+      RESTAPI_DB_USERNAME: "root"
+      RESTAPI_DB_PASSWORD: "root1234"
+      RESTAPI_TLS_ENABLE: "false"
+    ports:
+      - "9002:9000"
     networks:
       - backend
     depends_on:
